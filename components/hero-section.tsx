@@ -1,11 +1,23 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, BarChart3, Play } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 
 export function HeroSection() {
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 100)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   const scrollToFeatures = () => {
     const featuresSection = document.getElementById("features")
     if (featuresSection) {
@@ -117,29 +129,30 @@ export function HeroSection() {
               </Button>
             </Link>
 
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={scrollToFeatures}
-              className="border-border/50 hover:border-secondary/50 hover:bg-secondary/10 px-8 py-6 text-lg font-semibold group bg-transparent"
-            >
-              <Play className="mr-2 h-5 w-5" />
-              Learn More
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
           </motion.div>
         </motion.div>
       </div>
 
       {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+      <motion.button
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        animate={{
+          opacity: scrolled ? 0 : 1,
+          y: scrolled ? 20 : 0
+        }}
+        transition={{
+          opacity: { duration: 0.3 },
+          y: { duration: 0.3 },
+          delay: scrolled ? 0 : 2
+        }}
+        onClick={() => {
+          window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
+        }}
+        style={{ pointerEvents: scrolled ? "none" : "auto" }}
       >
         <motion.div
-          className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex justify-center"
+          className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex justify-center hover:border-primary/50 transition-colors"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
         >
@@ -149,7 +162,7 @@ export function HeroSection() {
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
           />
         </motion.div>
-      </motion.div>
+      </motion.button>
     </section>
   )
 }

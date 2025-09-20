@@ -152,34 +152,6 @@ export function FeaturesGrid() {
           })}
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-muted-foreground mb-6">Ready to transform your investment analysis?</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/dashboard">
-              <motion.button
-                className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold glow hover:bg-primary/90 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Go to Dashboard
-              </motion.button>
-            </Link>
-            <motion.button
-              className="px-8 py-3 border border-border/50 rounded-lg font-semibold hover:border-secondary/50 hover:bg-secondary/10 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Schedule Demo
-            </motion.button>
-          </div>
-        </motion.div>
       </div>
     </section>
   )

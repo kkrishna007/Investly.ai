@@ -121,7 +121,7 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
           onClick={onClose}
         >
           <motion.div
-            className="glass p-8 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto glow"
+            className="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 dark:border-gray-700"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -225,7 +225,7 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
                               <select
                                 value={file.category}
                                 onChange={(e) => updateFileCategory(file.id, e.target.value)}
-                                className="text-xs bg-background border border-border/50 rounded px-2 py-1"
+                                className="text-xs bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                               >
                                 {documentCategories.map((cat) => (
                                   <option key={cat.value} value={cat.value}>

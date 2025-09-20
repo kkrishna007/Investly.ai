@@ -15,6 +15,8 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { CompanyTabs } from "@/components/company-tabs"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { generateQuickDealNotePDF } from "@/lib/pdf-generator"
+import { useState } from "react"
 
 // Mock data - in a real app this would come from an API
 const getCompanyData = (id: string) => {
@@ -74,6 +76,25 @@ const getCompanyData = (id: string) => {
 
 export default function CompanyDetailPage({ params }: { params: { companyId: string } }) {
   const company = getCompanyData(params.companyId)
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      const result = await generateQuickDealNotePDF(company)
+      if (result.success) {
+        console.log('PDF generated successfully:', result.fileName)
+      } else {
+        console.error('PDF generation failed:', result.error)
+        alert('Failed to generate PDF. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Failed to generate PDF. Please try again.')
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,9 +114,13 @@ export default function CompanyDetailPage({ params }: { params: { companyId: str
 
             <div className="flex items-center space-x-3">
               <ThemeToggle />
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground glow">
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground glow"
+                onClick={handleDownloadPDF}
+                disabled={isGeneratingPDF}
+              >
                 <Download className="mr-2 h-4 w-4" />
-                Download Deal Note
+                {isGeneratingPDF ? "Generating..." : "Download Deal Note"}
               </Button>
             </div>
           </div>
@@ -103,7 +128,7 @@ export default function CompanyDetailPage({ params }: { params: { companyId: str
       </div>
 
       {/* Company Header */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8" data-pdf-content>
         <motion.div
           className="glass p-8 rounded-2xl glow mb-8"
           initial={{ opacity: 0, y: 20 }}

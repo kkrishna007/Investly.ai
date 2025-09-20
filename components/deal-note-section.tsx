@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -99,6 +99,11 @@ export function DealNoteSection() {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-balance leading-relaxed">
             Comprehensive investment analysis with interactive risk assessment and benchmarking
           </p>
+          <div className="flex items-center justify-center mt-4">
+            <Badge variant="outline" className="border-primary/50 text-primary bg-primary/10">
+              Live Demo Preview
+            </Badge>
+          </div>
         </motion.div>
 
         {/* Deal Note Dashboard */}
@@ -140,11 +145,40 @@ export function DealNoteSection() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="scorecard">Scorecard</TabsTrigger>
-              <TabsTrigger value="evidence">Evidence</TabsTrigger>
-            </TabsList>
+            <div className="glass rounded-xl p-2 glow mb-8">
+              <div className="grid grid-cols-3 gap-1">
+                <button
+                  onClick={() => setActiveTab("overview")}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-200 justify-center text-sm ${
+                    activeTab === "overview"
+                      ? "bg-primary text-primary-foreground shadow-lg"
+                      : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className="font-medium">Overview</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("scorecard")}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-200 justify-center text-sm ${
+                    activeTab === "scorecard"
+                      ? "bg-primary text-primary-foreground shadow-lg"
+                      : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className="font-medium">Scorecard</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("evidence")}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-200 justify-center text-sm ${
+                    activeTab === "evidence"
+                      ? "bg-primary text-primary-foreground shadow-lg"
+                      : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className="font-medium">Evidence</span>
+                </button>
+              </div>
+            </div>
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-8">
