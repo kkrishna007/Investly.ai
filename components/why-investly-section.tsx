@@ -27,7 +27,7 @@ const usps = [
   },
 ]
 
-export function WhyInvestIQSection() {
+export function WhyInvestlySection() {
   return (
     <section className="py-24 px-6 relative overflow-hidden">
       {/* Animated background */}
@@ -73,7 +73,7 @@ export function WhyInvestIQSection() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-balance">
             Why Choose{" "}
             <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              InvestIQ?
+              Investly.ai?
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-balance leading-relaxed">

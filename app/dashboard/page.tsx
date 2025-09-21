@@ -104,7 +104,7 @@ export default function DashboardPage() {
                   <Star className="h-5 w-5 text-white" />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                  InvestIQ
+                  Investly.ai
                 </span>
               </Link>
               <div className="hidden md:block text-muted-foreground">Dashboard</div>

@@ -13,9 +13,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "InvestIQ — AI that Decodes Startup Pitches",
+  title: "Investly.ai — AI that Decodes Startup Pitches",
   description: "Upload pitch docs. Get instant deal notes, risk heatmaps, and benchmarked insights.",
-  generator: "InvestIQ",
+  generator: "Investly.ai",
 }
 
 export default function RootLayout({

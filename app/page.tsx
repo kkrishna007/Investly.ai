@@ -2,7 +2,7 @@ import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
 import { FeaturesGrid } from "@/components/features-grid"
 import { DealNoteSection } from "@/components/deal-note-section"
-import { WhyInvestIQSection } from "@/components/why-investiq-section"
+import { WhyInvestlySection } from "@/components/why-investly-section"
 import { Footer } from "@/components/footer"
 
 export default function HomePage() {
@@ -12,7 +12,7 @@ export default function HomePage() {
       <HeroSection />
       <FeaturesGrid />
       <DealNoteSection />
-      <WhyInvestIQSection />
+      <WhyInvestlySection />
       <Footer />
     </main>
   )

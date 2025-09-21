@@ -83,9 +83,10 @@ export async function generateDealNotePDF(companyName: string) {
 export async function generateQuickDealNotePDF(companyData: any) {
   try {
     const pdf = new jsPDF('p', 'mm', 'a4')
-    const pageWidth = pdf.internal.pageSize.getWidth()
-    const pageHeight = pdf.internal.pageSize.getHeight()
-    let yPosition = 30
+  const pageWidth = pdf.internal.pageSize.getWidth()
+  const pageHeight = pdf.internal.pageSize.getHeight()
+  // Start below the header with a comfortable gap
+  let yPosition = 40
 
     // Helper function to add new page if needed
     const checkPageBreak = (requiredSpace: number) => {
@@ -122,103 +123,177 @@ export async function generateQuickDealNotePDF(companyData: any) {
     pdf.text(summaryLines, 20, yPosition)
     yPosition += summaryLines.length * 5 + 10
 
-    // Company Overview Section
-    checkPageBreak(60)
-    pdf.setFontSize(14)
-    pdf.setFont('helvetica', 'bold')
-    pdf.text('Company Overview', 20, yPosition)
-    yPosition += 10
+  // Company Overview Section (table)
+    checkPageBreak(80)
+  // Section heading (use primary color)
+  pdf.setTextColor(59, 130, 246)
+  pdf.setFontSize(14)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Company Overview', 20, yPosition)
+  pdf.setTextColor(0, 0, 0)
+  yPosition += 10
 
-    // Company details in a structured format
+    // Company details as a two-column bordered table
     pdf.setFontSize(10)
     pdf.setFont('helvetica', 'normal')
 
     const companyDetails = [
-      ['Sector:', companyData.sector],
-      ['Current Revenue:', companyData.arr],
-      ['Funding Stage:', companyData.stage],
-      ['Founded:', companyData.founded],
-      ['Team Size:', companyData.employees],
-      ['Location:', companyData.location],
-      ['Last Analysis:', companyData.analyzed]
+      ['Sector', companyData.sector],
+      ['Current Revenue', companyData.arr],
+      ['Funding Stage', companyData.stage],
+      ['Founded', companyData.founded],
+      ['Team Size', companyData.employees],
+      ['Location', companyData.location],
+      ['Last Analysis', companyData.analyzed]
     ]
 
-    companyDetails.forEach(([label, value]) => {
-      pdf.setFont('helvetica', 'bold')
-      pdf.text(label, 20, yPosition)
-      pdf.setFont('helvetica', 'normal')
-      pdf.text(value, 70, yPosition)
-      yPosition += 6
-    })
+  const tableX = 20
+  const tableWidth = pageWidth - 40
+  const labelColW = 60
+  const overviewRowH = 8
+  const tableH = companyDetails.length * overviewRowH
 
-    yPosition += 5
+    // Outer border
+    pdf.setDrawColor(128, 128, 128)
+    pdf.rect(tableX, yPosition, tableWidth, tableH, 'S')
+
+    // Horizontal separators and cell text
+    companyDetails.forEach((row, i) => {
+      const rowY = yPosition + i * overviewRowH
+      // draw horizontal line (except first top border)
+      pdf.line(tableX, rowY, tableX + tableWidth, rowY)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text(String(row[0]) + ':', tableX + 4, rowY + 6)
+      pdf.setFont('helvetica', 'normal')
+      pdf.text(String(row[1]), tableX + labelColW + 8, rowY + 6)
+    })
+    // bottom border line
+  pdf.line(tableX, yPosition + tableH, tableX + tableWidth, yPosition + tableH)
+  yPosition += tableH + 8
 
     // Description
     pdf.setFont('helvetica', 'bold')
-    pdf.text('Description:', 20, yPosition)
+    pdf.text('Description', 20, yPosition)
     yPosition += 7
     pdf.setFont('helvetica', 'normal')
     const descLines = pdf.splitTextToSize(companyData.description, pageWidth - 40)
     pdf.text(descLines, 20, yPosition)
-    yPosition += descLines.length * 5 + 15
+    yPosition += descLines.length * 5 + 12
 
-    // Financial Metrics Section
-    checkPageBreak(80)
-    pdf.setFontSize(14)
-    pdf.setFont('helvetica', 'bold')
-    pdf.text('Key Performance Metrics', 20, yPosition)
-    yPosition += 15
+  // Financial Metrics Section
+  checkPageBreak(80)
+  pdf.setTextColor(59, 130, 246)
+  pdf.setFontSize(14)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Key Performance Metrics', 20, yPosition)
+  pdf.setTextColor(0, 0, 0)
+  yPosition += 12
 
-    // Create a table for metrics
-    pdf.setFontSize(10)
-    const metrics = [
-      ['Metric', 'Value', 'Industry Benchmark', 'Performance'],
-      ['ARR Growth', '240% YoY', '180% YoY', 'Above'],
-      ['CAC Payback Period', '8 months', '12 months', 'Superior'],
-      ['Gross Margin', '85%', '75%', 'Above'],
-      ['Burn Multiple', '1.2x', '2.1x', 'Superior'],
-      ['Net Promoter Score', '72', '50', 'Above'],
-      ['Customer Retention', '94%', '85%', 'Above']
-    ]
+      // Create a table for metrics (with borders) - improved column sizing and zebra rows
+      pdf.setFontSize(10)
+      const metrics = [
+        ['Metric', 'Value', 'Industry Benchmark', 'Performance'],
+        ['ARR Growth', '240% YoY', '180% YoY', 'Above'],
+        ['CAC Payback Period', '8 months', '12 months', 'Superior'],
+        ['Gross Margin', '85%', '75%', 'Above'],
+        ['Burn Multiple', '1.2x', '2.1x', 'Superior'],
+        ['Net Promoter Score', '72', '50', 'Above'],
+        ['Customer Retention', '94%', '85%', 'Above']
+      ]
 
-    // Table headers
-    pdf.setFillColor(240, 240, 240)
-    pdf.rect(20, yPosition - 5, pageWidth - 40, 8, 'F')
-    pdf.setFont('helvetica', 'bold')
-    pdf.text('Metric', 25, yPosition)
-    pdf.text('Value', 80, yPosition)
-    pdf.text('Benchmark', 120, yPosition)
-    pdf.text('Status', 160, yPosition)
-    yPosition += 10
+      const metricsX = 20
+      const metricsW = pageWidth - 40
+      const headerH = 9
+      const rowH = 10
+      const rows = metrics.length - 1
+      const metricsTableH = headerH + rows * rowH
 
-    pdf.setFont('helvetica', 'normal')
-    metrics.slice(1).forEach(([metric, value, benchmark, performance]) => {
-      pdf.text(metric, 25, yPosition)
-      pdf.text(value, 80, yPosition)
-      pdf.text(benchmark, 120, yPosition)
+      // Column widths
+      const col1W = Math.round(metricsW * 0.45) // Metric
+      const col2W = Math.round(metricsW * 0.18) // Value
+      const col3W = Math.round(metricsW * 0.22) // Benchmark
+      const col4W = metricsW - (col1W + col2W + col3W) // Status
 
-      // Color code performance
-      if (performance === 'Superior') {
-        pdf.setTextColor(34, 197, 94) // Green
-      } else if (performance === 'Above') {
-        pdf.setTextColor(59, 130, 246) // Blue
-      } else {
-        pdf.setTextColor(239, 68, 68) // Red
-      }
-      pdf.text(performance, 160, yPosition)
-      pdf.setTextColor(0, 0, 0) // Reset to black
+      // Draw outer border and header background
+      pdf.setDrawColor(200, 200, 200)
+      pdf.rect(metricsX, yPosition - 6, metricsW, metricsTableH + 2, 'S')
+      pdf.setFillColor(245, 245, 245)
+      pdf.rect(metricsX, yPosition - 6, metricsW, headerH, 'F')
 
-      yPosition += 7
-    })
+      // Header labels (primary color)
+      pdf.setFont('helvetica', 'bold')
+      pdf.setTextColor(59, 130, 246)
+      pdf.text('Metric', metricsX + 5, yPosition)
+      pdf.text('Value', metricsX + col1W + 8, yPosition)
+      pdf.text('Benchmark', metricsX + col1W + col2W + 12, yPosition)
+      pdf.text('Status', metricsX + col1W + col2W + col3W + 10, yPosition)
+      pdf.setTextColor(0, 0, 0)
+      yPosition += headerH + 2
 
-    yPosition += 15
+      // Rows with zebra striping and separators — compute row heights to fit wrapped text
+      let metricsCursorY = yPosition
+      metrics.slice(1).forEach((r, idx) => {
+        const [metric, value, benchmark, performance] = r
 
-    // Risk Assessment Section
-    checkPageBreak(70)
-    pdf.setFontSize(14)
-    pdf.setFont('helvetica', 'bold')
-    pdf.text('Risk Assessment', 20, yPosition)
-    yPosition += 15
+        // compute wrapped lines for each cell
+        const metricLines = pdf.splitTextToSize(String(metric), col1W - 10)
+        const valueLines = pdf.splitTextToSize(String(value), col2W - 8)
+        const benchmarkLines = pdf.splitTextToSize(String(benchmark), col3W - 8)
+        const statusLines = pdf.splitTextToSize(String(performance), col4W - 10)
+
+        // determine row height (line count * approx line height)
+        const lineHeight = 5
+        const cellLines = Math.max(metricLines.length, valueLines.length, benchmarkLines.length, statusLines.length)
+        const thisRowH = Math.max(rowH, cellLines * lineHeight + 6)
+
+        // zebra background
+        if (idx % 2 === 0) {
+          pdf.setFillColor(250, 250, 250)
+          pdf.rect(metricsX, metricsCursorY - 6, metricsW, thisRowH, 'F')
+        }
+
+        // separators
+        pdf.setDrawColor(230, 230, 230)
+        pdf.line(metricsX, metricsCursorY - 6, metricsX + metricsW, metricsCursorY - 6)
+
+        // draw text (top-aligned inside cell)
+        pdf.setFont('helvetica', 'normal')
+        let tx = metricsX + 5
+        let ty = metricsCursorY + 4
+        pdf.text(metricLines, tx, ty)
+
+        tx = metricsX + col1W + 8
+        pdf.text(valueLines, tx, ty)
+
+        tx = metricsX + col1W + col2W + 12
+        pdf.text(benchmarkLines, tx, ty)
+
+        // Color code performance
+        if (performance === 'Superior') {
+          pdf.setTextColor(34, 197, 94)
+        } else if (performance === 'Above') {
+          pdf.setTextColor(59, 130, 246)
+        } else {
+          pdf.setTextColor(239, 68, 68)
+        }
+
+        tx = metricsX + col1W + col2W + col3W + 10
+        pdf.text(statusLines, tx, ty)
+        pdf.setTextColor(0, 0, 0)
+
+        metricsCursorY += thisRowH
+      })
+
+      yPosition = metricsCursorY + 10
+
+  // Risk Assessment Section (table)
+  checkPageBreak(90)
+  pdf.setTextColor(59, 130, 246)
+  pdf.setFontSize(14)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Risk Assessment', 20, yPosition)
+  pdf.setTextColor(0, 0, 0)
+  yPosition += 10
 
     const riskFactors = [
       { category: 'Market Risk', level: 'High', score: 85, description: 'Competitive market with large incumbents' },
@@ -229,35 +304,70 @@ export async function generateQuickDealNotePDF(companyData: any) {
       { category: 'Legal Risk', level: 'Low', score: 90, description: 'Clean legal structure and IP protection' }
     ]
 
-    pdf.setFontSize(10)
-    riskFactors.forEach((risk) => {
-      checkPageBreak(15)
+    const riskX = 20
+    const riskW = pageWidth - 40
+    const riskRowH = 12
+    const riskTableH = riskFactors.length * riskRowH + riskRowH
+    // outer border
+    pdf.setDrawColor(200, 200, 200)
+    pdf.rect(riskX, yPosition - 6, riskW, riskTableH, 'S')
 
-      // Risk level color coding
+    // header row
+    pdf.setFillColor(245, 245, 245)
+    pdf.rect(riskX, yPosition - 6, riskW, riskRowH, 'F')
+    pdf.setFont('helvetica', 'bold')
+    pdf.text('Category', riskX + 5, yPosition)
+    pdf.text('Level (score)', riskX + 70, yPosition)
+    pdf.text('Details', riskX + 120, yPosition)
+    yPosition += riskRowH
+
+    pdf.setFont('helvetica', 'normal')
+    // compute per-row heights based on wrapped details so text does not overlap
+    let riskCursorY = yPosition
+    riskFactors.forEach((risk, idx) => {
+      // split lines for each column
+      const catLines = pdf.splitTextToSize(risk.category, 45)
+      const levelText = `${risk.level} (${risk.score}/100)`
+      const levelLines = pdf.splitTextToSize(levelText, 50)
+      pdf.setFontSize(9)
+      const detailsLines = pdf.splitTextToSize(risk.description, riskW - 130)
+      pdf.setFontSize(10)
+
+      const cellLines = Math.max(catLines.length, levelLines.length, detailsLines.length)
+      const thisRowH = Math.max(riskRowH, cellLines * 5 + 6)
+
+      // separator
+      pdf.line(riskX, riskCursorY - 4, riskX + riskW, riskCursorY - 4)
+
+      // risk color
       let riskColor: [number, number, number] = [0, 0, 0]
       if (risk.level === 'Low') riskColor = [34, 197, 94]
       else if (risk.level === 'Medium') riskColor = [245, 158, 11]
       else riskColor = [239, 68, 68]
 
       pdf.setFont('helvetica', 'bold')
-      pdf.text(risk.category, 20, yPosition)
+      pdf.text(catLines, riskX + 5, riskCursorY + 6)
       pdf.setTextColor(...riskColor)
-      pdf.text(`${risk.level} (${risk.score}/100)`, 80, yPosition)
+      pdf.text(levelLines, riskX + 70, riskCursorY + 6)
       pdf.setTextColor(0, 0, 0)
-      yPosition += 5
 
       pdf.setFont('helvetica', 'normal')
-      const riskDesc = pdf.splitTextToSize(risk.description, pageWidth - 60)
-      pdf.text(riskDesc, 25, yPosition)
-      yPosition += riskDesc.length * 4 + 8
-    })
+      pdf.setFontSize(9)
+      pdf.text(detailsLines, riskX + 120, riskCursorY + 6)
+      pdf.setFontSize(10)
 
-    // Market Analysis Section
-    checkPageBreak(50)
-    pdf.setFontSize(14)
-    pdf.setFont('helvetica', 'bold')
-    pdf.text('Market Analysis', 20, yPosition)
-    yPosition += 15
+      riskCursorY += thisRowH
+    })
+    yPosition = riskCursorY + 6
+
+  // Market Analysis Section
+  checkPageBreak(50)
+  pdf.setTextColor(59, 130, 246)
+  pdf.setFontSize(14)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Market Analysis', 20, yPosition)
+  pdf.setTextColor(0, 0, 0)
+  yPosition += 12
 
     pdf.setFontSize(10)
     pdf.setFont('helvetica', 'normal')
@@ -271,25 +381,56 @@ export async function generateQuickDealNotePDF(companyData: any) {
       ['Regulatory Environment:', 'Medium Risk']
     ]
 
-    marketData.forEach(([label, value]) => {
+    // Market Analysis as table
+    const marketX = 20
+    const marketW = pageWidth - 40
+    const marketRowH = 8
+    const marketH = marketData.length * marketRowH
+    pdf.setDrawColor(200, 200, 200)
+    pdf.rect(marketX, yPosition, marketW, marketH, 'S')
+    marketData.forEach(([label, value], idx) => {
+      const rowY = yPosition + idx * marketRowH
       pdf.setFont('helvetica', 'bold')
-      pdf.text(label, 20, yPosition)
+      pdf.text(label as string, marketX + 4, rowY + 6)
       pdf.setFont('helvetica', 'normal')
-      pdf.text(value, 100, yPosition)
-      yPosition += 6
+      pdf.text(value as string, marketX + 120, rowY + 6)
+      // separator
+      pdf.line(marketX, rowY, marketX + marketW, rowY)
     })
-
-    yPosition += 15
+    yPosition += marketH + 12
 
     // Investment Recommendation Section
-    checkPageBreak(40)
-    pdf.setFillColor(34, 197, 94, 0.1) // Light green background
-    pdf.rect(15, yPosition - 8, pageWidth - 30, 35, 'F')
+    // Investment Recommendation Section - rounded box with dark curved border and light background
+    checkPageBreak(60)
+    const recX = 15
+    const recW = pageWidth - 30
+    const recH = 45
+    const recRadius = 4
+
+    // Background (light green) and dark green border from project palette
+    pdf.setFillColor(237, 250, 241) // light green background
+    // Draw filled rounded rect (fill)
+    // roundedRect may be available in jsPDF; fallback to regular rect if not
+    // draw fill first
+    try {
+      // @ts-ignore
+      pdf.roundedRect(recX, yPosition - 6, recW, recH, recRadius, recRadius, 'F')
+      pdf.setDrawColor(34, 97, 44) // darker green border
+      pdf.setLineWidth(1.8)
+      // @ts-ignore
+      pdf.roundedRect(recX, yPosition - 6, recW, recH, recRadius, recRadius, 'S')
+    } catch (e) {
+      // fallback
+      pdf.rect(recX, yPosition - 6, recW, recH, 'F')
+      pdf.setDrawColor(34, 97, 44)
+      pdf.setLineWidth(1.8)
+      pdf.rect(recX, yPosition - 6, recW, recH, 'S')
+    }
 
     pdf.setFontSize(16)
     pdf.setFont('helvetica', 'bold')
-    pdf.setTextColor(34, 197, 94)
-    pdf.text('Investment Recommendation: STRONG BUY', 20, yPosition)
+    pdf.setTextColor(34, 97, 44)
+    pdf.text('Investment Recommendation: STRONG BUY', recX + 8, yPosition + 2)
     pdf.setTextColor(0, 0, 0)
     yPosition += 12
 
@@ -297,9 +438,9 @@ export async function generateQuickDealNotePDF(companyData: any) {
     pdf.setFont('helvetica', 'normal')
     const recommendationText = `Based on our comprehensive analysis, ${companyData.name} represents a strong investment opportunity. The company demonstrates superior financial metrics across key indicators, maintains a strong competitive position, and shows consistent growth trajectory. The experienced team and proven market traction reduce execution risk, making this suitable for portfolio inclusion with standard due diligence procedures.`
 
-    const recLines = pdf.splitTextToSize(recommendationText, pageWidth - 50)
-    pdf.text(recLines, 20, yPosition)
-    yPosition += recLines.length * 5 + 15
+    const recLines = pdf.splitTextToSize(recommendationText, recW - 24)
+    pdf.text(recLines, recX + 8, yPosition + 6)
+    yPosition += recH + 8
 
     // Next Steps Section
     checkPageBreak(30)
@@ -328,7 +469,7 @@ export async function generateQuickDealNotePDF(companyData: any) {
       pdf.setFontSize(8)
       pdf.setTextColor(128, 128, 128)
       pdf.text(`Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 20, pageHeight - 10)
-      pdf.text(`InvestIQ - AI-Powered Investment Analysis`, pageWidth - 20, pageHeight - 10, { align: 'right' })
+      pdf.text(`Investly.ai - AI-Powered Investment Analysis`, pageWidth - 20, pageHeight - 10, { align: 'right' })
       pdf.text(`Page ${pageNum} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' })
     }
 

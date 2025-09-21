@@ -20,7 +20,7 @@ export function Footer() {
             >
               <h3 className="text-2xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  InvestIQ
+                  Investly.ai
                 </span>
               </h3>
               <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -62,7 +62,7 @@ export function Footer() {
           viewport={{ once: true }}
         >
           <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4 md:mb-0">
-            <p className="text-sm text-muted-foreground">© 2025 InvestIQ. Built for hackathon demonstration.</p>
+            <p className="text-sm text-muted-foreground">© 2025 Investly.ai</p>
           </div>
 
         </motion.div>

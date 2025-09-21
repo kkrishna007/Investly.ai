@@ -1,105 +1,84 @@
-# InvestIQ v2
+# InvestIQ
 
-InvestIQ v2 is a Next.js 13+ (App Router) TypeScript project for a startup-focused investment intelligence dashboard. It provides UI components, a dashboard, and utilities to evaluate companies, with several ready-made components and a modern design system.
+InvestIQ is an AI-powered investment intelligence platform designed to streamline the analysis of startup pitches. Built with Next.js 14 and TypeScript, it allows users to upload investment documents and receive instant, data-driven insights, including deal memos, risk assessments, and competitive analysis.
 
-## Key features
+The application features a landing page, a main dashboard for an overview of analyzed companies, and detailed analysis pages for each company.
 
-- Next.js 13 App Router with TypeScript
-- Reusable UI primitives under `components/ui/` (buttons, cards, forms, etc.)
-- Pages and nested routes under `app/` (dashboard, company pages)
-- Small library helpers in `lib/` and hooks in `hooks/`
-- Tailwind / PostCSS powered styling (see `postcss.config.mjs`)
+## Key Features
 
-## Prerequisites
+-   **Interactive Dashboard**: A central hub to manage, view, and compare analyzed companies with key metrics at a glance.
+-   **AI-Powered Analysis Modules**:
+    -   **Deal Memos**: Automatically generate comprehensive deal notes and risk heatmaps.
+    -   **TAM Reality Check**: Validates Total Addressable Market (TAM) claims against verified industry data sources.
+    -   **Cross-Document Consistency Checker**: Detects discrepancies in metrics (e.g., ARR, user count) across pitch decks, financials, and transcripts.
+    -   **Vanity Metrics Filter**: Distinguishes between meaningful business metrics and superficial ones.
+    -   **Missing Metrics Detector**: Identifies critical KPIs absent from founder materials and generates request templates.
+    -   **Founder Credibility System**: Assesses founder backgrounds, verifying experience and flagging potential risks.
+    -   **Competitive Intelligence**: Maps the competitive landscape with funding data and strategic insights.
+-   **Document Upload**: A modal for uploading multiple documents (pitch decks, financials, etc.) and categorizing them for analysis.
+-   **PDF Export**: Generate and download detailed deal notes as a PDF.
+-   **Modern UI/UX**: Built with a futuristic, clean design system using shadcn/ui, Tailwind CSS, and Framer Motion for smooth animations.
 
-- Node.js 18+ (recommended)
-- pnpm (the project uses pnpm lockfile)
-- Git (optional)
+## Technology Stack
 
-## Setup (PowerShell)
+-   **Framework**: [Next.js](https://nextjs.org/) (App Router)
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/), [Lucide React](https://lucide.dev/)
+-   **Charting**: [Recharts](https://recharts.org/)
+-   **Animation**: [Framer Motion](https://www.framer.com/motion/)
+-   **Forms**: [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/)
+-   **PDF Generation**: [jsPDF](https://github.com/parallax/jsPDF), [html2canvas](https://html2canvas.hertzen.com/)
+-   **Package Manager**: [pnpm](https://pnpm.io/)
 
-Open a terminal in the project root and run:
+## Project Structure
 
-```pwsh
-# install dependencies
-pnpm install
+The repository is organized as follows:
 
-# run development server
-pnpm dev
-
-# build for production
-pnpm build
-
-# start production server
-pnpm start
+```
+├── app/                  # Next.js App Router pages and layouts
+│   ├── dashboard/        # Main dashboard and company detail pages
+├── components/           # Reusable React components for features
+│   ├── ui/               # Core UI components from shadcn/ui
+├── hooks/                # Custom React hooks (e.g., useToast)
+├── lib/                  # Utility functions and libraries (e.g., pdf-generator)
+├── public/               # Static assets
+└── styles/               # Global CSS files
 ```
 
-If you prefer npm or yarn, you can convert commands accordingly, but pnpm is recommended.
+## Getting Started
 
-## Available scripts
+### Prerequisites
 
-Scripts are defined in `package.json`. Common ones:
+-   [Node.js](https://nodejs.org/en/) (v18 or later)
+-   [pnpm](https://pnpm.io/installation)
 
-- `dev` - Run Next.js in development mode
-- `build` - Build the app for production
-- `start` - Start the production server
-- `lint` - Run linters (if configured)
+### Installation and Setup
 
-Run scripts with pnpm e.g. `pnpm dev`.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/kkrishna007/InvestIQ.git
+    ```
 
-## Project structure
+2.  **Navigate to the project directory:**
+    ```bash
+    cd InvestIQ
+    ```
 
-- `app/` - Next.js App Router pages and layouts
-- `components/` - React components and UI primitives
-- `components/ui/` - Small design system primitives (buttons, inputs, toasts)
-- `hooks/` - Custom React hooks
-- `lib/` - Utility functions
-- `public/` - Static assets
-- `styles/` - Global styles
+3.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
 
-## Contributing
+4.  **Run the development server:**
+    ```bash
+    pnpm dev
+    ```
 
-Contributions are welcome. Suggested workflow:
+The application will be available at `http://localhost:3000`.
 
-1. Fork the repository
-2. Create a branch for your feature/fix
-3. Run the project locally and add tests where appropriate
-4. Open a pull request with a clear description
+### Available Scripts
 
-## License
-
-Specify a license here (e.g. MIT). If the project does not yet have one, consider adding an `LICENSE` file.
-
-## Contact
-
-For questions, reach out to the maintainers or open an issue in the repository.
-
-## Platform notes & troubleshooting
-
-- This project was developed and tested on Windows using PowerShell. The example commands above use `pwsh` syntax. On macOS/Linux use the same commands in your shell (bash/zsh).
-- If `pnpm` is not installed, install it globally with `npm i -g pnpm` or use `npx pnpm` for a one-off run.
-- If you encounter TypeScript or lint errors during development, run `pnpm lint` (if configured) or inspect the terminal output to locate the failing file.
-- Common Next.js issues:
-	- Port already in use: set `PORT` env var before starting, e.g. `PORT=3001 pnpm dev` (on PowerShell use `$env:PORT=3001; pnpm dev`).
-	- Fast refresh not working: try stopping and restarting the dev server.
-
-## Small checklist (developer)
-
-- [ ] Add `LICENSE` if you want to publish
-- [ ] Add project badges (build, license, coverage)
-- [ ] Add CONTRIBUTING.md for contributor guidelines
-
----
-
-Generated by the project maintainer tools. If you'd like a different README style or extra sections (architecture, API, deployment), tell me which sections to add.
-
----
-
-## License (example)
-
-This project is available under the MIT License. Create a `LICENSE` file at the project root with the full license text if you choose to use it.
-
-## Maintainers / Contact
-
-Maintainers: The InvestIQ dev team
-Contact: team@example.com
+-   `pnpm dev`: Starts the development server.
+-   `pnpm build`: Creates a production-ready build.
+-   `pnpm start`: Starts the production server.
+-   `pnpm lint`: Runs the linter to check for code quality issues.

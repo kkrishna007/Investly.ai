@@ -87,7 +87,7 @@ export function HeroSection() {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                InvestIQ
+                Investly.ai
               </span>
             </motion.h1>
 
